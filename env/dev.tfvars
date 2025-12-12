@@ -1,0 +1,7 @@
+vpc_cidr = "10.0.0.0/18"
+public_subnet_cidr = "10.0.1.0/24"
+availability_zone = "ap-northeast-1a"
+ami_id = "ami-0aec5ae807cea9ce0"
+instance_type = "t2.nano"
+key_name             = "aws-og-key"
+environment          = "dev"
