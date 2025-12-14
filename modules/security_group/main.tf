@@ -11,7 +11,7 @@
 
 
 resource "aws_security_group" "public" {
-  name        = "aws-og-sg"
+  name        = var.vpc_sg_name
   description = "Allow SSH + HTTP"
   vpc_id      = var.vpc_id
 

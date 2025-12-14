@@ -39,3 +39,11 @@ variable "subnet_id" {
 variable "vpc_security_group_ids" {
   description = "The security group IDs for the EC2 instance"
 }
+variable "lambda_vpc_cidr" {
+  default = "10.0.0.0/16"
+}
+
+variable "lambda_subnet_cidr" {
+  default = ["10.0.1.0/24", "10.0.2.0/24"]
+  type = list(string)
+}
