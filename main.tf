@@ -23,6 +23,19 @@ variable "instance_type" {
   description = "The instance type for the EC2 instance"
 }
 
+variable "discord_webhook_url" {
+  description = "Discord webhook URL for notifications"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "enable_discord_notifications" {
+  description = "Enable Discord notifications after deployment"
+  type        = bool
+  default     = false
+}
+
 # --------------------------
 # VPC
 # --------------------------
@@ -165,4 +178,27 @@ output "ec2_public_ip" {
 
 output "ssh_command" {
   value = "ssh ubuntu@${aws_instance.aws_og_public_ec2.public_ip}"
+}
+
+# --------------------------
+# Discord Notification
+# --------------------------
+resource "null_resource" "discord_notification" {
+  count = var.enable_discord_notifications && var.discord_webhook_url != "" ? 1 : 0
+
+  triggers = {
+    ec2_id = aws_instance.aws_og_public_ec2.id
+    timestamp = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      curl -H "Content-Type: application/json" \
+        -d "{\"embeds\":[{\"title\":\"🚀 AWS Infrastructure Deployed\",\"color\":3066993,\"fields\":[{\"name\":\"EC2 Public IP\",\"value\":\"${aws_instance.aws_og_public_ec2.public_ip}\",\"inline\":true},{\"name\":\"Instance Type\",\"value\":\"${var.instance_type}\",\"inline\":true},{\"name\":\"Region\",\"value\":\"ap-northeast-1\",\"inline\":true},{\"name\":\"VPC CIDR\",\"value\":\"${var.vpc_cidr}\",\"inline\":true},{\"name\":\"SSH Command\",\"value\":\"\`\`\`ssh ubuntu@${aws_instance.aws_og_public_ec2.public_ip}\`\`\`\",\"inline\":false}],\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"}]}" \
+        "${var.discord_webhook_url}"
+    EOT
+    interpreter = ["bash", "-c"]
+  }
+
+  depends_on = [aws_instance.aws_og_public_ec2]
 }
