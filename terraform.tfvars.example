@@ -1,0 +1,13 @@
+# Example Terraform Variables
+# Copy this file to terraform.tfvars and update with your values
+
+# Discord Notifications (Optional)
+enable_discord_notifications = true
+discord_webhook_url = "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN"
+
+# AWS Configuration
+# vpc_cidr = "10.0.0.0/18"
+# public_subnet_cidr = "10.0.1.0/24"
+# availability_zone = "ap-northeast-1a"
+# ami_id = "ami-0aec5ae807cea9ce0"
+# instance_type = "t2.nano"
