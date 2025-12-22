@@ -14,7 +14,34 @@ def lambda_handler(event, context):
     key = record['s3']['object']['key']
 
     message = {
-        "content": f"Hello from curl!"
+        "embeds": [
+            {
+                "title": "S3 檔案上傳通知",
+                "description": f"有新檔案更新囉!",
+                "fields": [
+                    {
+                        "name": "檔案名稱",
+                        "value":str(key),
+                        "inline": False
+                    },
+                    {
+                        "name": "檔案大小",
+                        "value": str(record['s3']['object']['size']/1024) + ' KB',
+                        "inline": False
+                    },
+                    {
+                        "name": "S3 bucket 名稱",
+                        "value": str(bucket),
+                        "inline": False
+                    }
+                ],
+                "color": 5814783,
+                "footer": {
+                    "text": "由 AWS Lambda 自動發送"
+                },
+                "timestamp": record['eventTime']
+            }
+        ]
     }
 
     data = json.dumps(message).encode("utf-8")
